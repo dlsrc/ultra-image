@@ -1,0 +1,23 @@
+{
+    "name": "ultra/image",
+    "type": "library",
+    "description": "A tool for simple operations with images. Cropping, resizing, creating thumbnails, etc.",
+    "license": "MIT",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/dlsrc/ultra-image"
+        }
+    ],
+    "authors": [
+        {
+            "name": "Dmitry Lebedev",
+            "email": "dl@adios.ru",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.3",
+        "ultra/core": "^1.0.0"
+    }
+}
