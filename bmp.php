@@ -12,16 +12,16 @@ final class Wbmp extends Image {
 	}
 
 	protected function create(string $file) {
-		return \imagecreatefromwbmp($file);
+		return imagecreatefromwbmp($file);
 	}
 
 	protected function save($image, string|null $file = NULL): void {
-		//\imagewbmp($image, $file);
-		if (\is_null($file)) {
-			\imagewbmp($image);
+		//imagewbmp($image, $file);
+		if (is_null($file)) {
+			imagewbmp($image);
 		}
 		else {
-			\imagewbmp($image, $file);
+			imagewbmp($image, $file);
 		}
 	}
 }

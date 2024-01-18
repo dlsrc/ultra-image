@@ -12,18 +12,18 @@ final class Png extends Image {
 	}
 
 	protected function create(string $file) {
-		return \imagecreatefrompng($file);
+		return imagecreatefrompng($file);
 	}
 
 	protected function save($image, string|null $file = NULL): void {
-		\imagealphablending($image, false);
-		\imagesavealpha($image, true);
+		imagealphablending($image, false);
+		imagesavealpha($image, true);
 
-		if (\is_null($file)) {
-			\imagepng($image);
+		if (is_null($file)) {
+			imagepng($image);
 		}
 		else {
-			\imagepng($image, $file);
+			imagepng($image, $file);
 		}
 	}
 }

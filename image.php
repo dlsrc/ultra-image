@@ -5,7 +5,11 @@
  * Please see the LICENSE file for copyright and licensing information.
  */
 namespace ultra\image;
-use \ultra\Code, \ultra\Error, \ultra\Status;
+
+use ultra\Code;
+use ultra\Error;
+use ultra\IO;
+use ultra\Status;
 
 enum Cut {
 	case Bottom;
@@ -62,23 +66,23 @@ abstract class Image {
 		string $ratio  = '3 : 2',
 		bool   $check  = false
 	): string|null {
-		list($w, $h) = \preg_split('/\D+/', $ratio);
-		$path = \pathinfo($source);
+		list($w, $h) = preg_split('/\D+/', $ratio);
+		$path = pathinfo($source);
 		$tmb = $path['dirname'].'/'.$path['filename'].'-thumb'.$w.'x'.$h.'w'.$width.'.'.$path['extension'];
 
-		if (\file_exists($prefix.$tmb)) {
+		if (file_exists($prefix.$tmb)) {
 			if (!$check) {
 				return $tmb;
 			}
 
-			$size = \getimagesize($prefix.$tmb);
+			$size = getimagesize($prefix.$tmb);
 
-			if ($size[0] == $width && \round($size[0] / $w * $h, 0) == $size[1]) {
+			if ($size[0] == $width && round($size[0] / $w * $h, 0) == $size[1]) {
 				return $tmb;
 			}
 		}
 
-		if (!\file_exists($prefix.$source)) {
+		if (!file_exists($prefix.$source)) {
 			Error::log('File "'.$prefix.$source.'" not exists.', Code::Nofile);
 			return null;
 		}
@@ -88,7 +92,7 @@ abstract class Image {
 			return null;
 		}
 
-		if (!$img->thumb($width, (int)\round($width / $w * $h, 0), $prefix.$tmb)) {
+		if (!$img->thumb($width, (int)round($width / $w * $h, 0), $prefix.$tmb)) {
 			Error::log('Thumbnail file not generated.', Code::Makefile);
 			return null;
 		}
@@ -126,23 +130,23 @@ abstract class Image {
 		string $ratio  = '3 : 2',
 		bool   $check  = false
 	): ?string {
-		list($w, $h) = \preg_split('/\D+/', $ratio);
-		$path = \pathinfo($source);
+		list($w, $h) = preg_split('/\D+/', $ratio);
+		$path = pathinfo($source);
 		$tmb = $path['dirname'].'/'.$path['filename'].$w.'x'.$h.'w'.$width.'.'.$path['extension'];
 
-		if (\file_exists($prefix.$tmb)) {
+		if (file_exists($prefix.$tmb)) {
 			if (!$check) {
 				return $tmb;
 			}
 
-			$size = \getimagesize($prefix.$tmb);
+			$size = getimagesize($prefix.$tmb);
 
-			if ($size[0] == $width && \round($size[0] / $w * $h, 0) == $size[1]) {
+			if ($size[0] == $width && round($size[0] / $w * $h, 0) == $size[1]) {
 				return $tmb;
 			}
 		}
 
-		if (!\file_exists($prefix.$source)) {
+		if (!file_exists($prefix.$source)) {
 			return null;
 		}
 
@@ -150,7 +154,7 @@ abstract class Image {
 			return null;
 		}
 
-		if (!$img->adapt($width, (int)\round($width / $w * $h, 0), $prefix.$tmb)) {
+		if (!$img->adapt($width, (int)round($width / $w * $h, 0), $prefix.$tmb)) {
 			return null;
 		}
 
@@ -162,19 +166,19 @@ abstract class Image {
 	 * массив с размером изображения, если нет вернёт FALSE.
 	 */
 	public static function exists(string $file): array|null {
-		if (!\file_exists($file) || !\is_readable($file)) {
+		if (!file_exists($file) || !is_readable($file)) {
 			return null;
 		}
 
-		if (!$type = \mime_content_type($file)) {
+		if (!$type = mime_content_type($file)) {
 			return null;
 		}
 
-		if (!\str_starts_with($type, 'image')) {
+		if (!str_starts_with($type, 'image')) {
 			return null;
 		}
 
-		if (!$size = \getimagesize($file)) {
+		if (!$size = getimagesize($file)) {
 			return null;
 		}
 
@@ -208,7 +212,7 @@ abstract class Image {
 			}
 		}
 		else {
-			list($w, $h) = \preg_split('/\D+/', $ratio);
+			list($w, $h) = preg_split('/\D+/', $ratio);
 
 			if ($size[0] * $h == $size[1] * $w) {
 				if ($width > 0 && 0 == $height) {
@@ -299,30 +303,30 @@ abstract class Image {
 		bool   $src    = false,
 		bool   $suffix = false
 	): string|null {
-		$path = \pathinfo($file);
+		$path = pathinfo($file);
 		$source = $path['dirname'].'/'.$path['filename'].'.src.'.$path['extension'];
 
 		if ($suffix) {
 			if ($ratio) {
-				$newfile = $path['dirname'].'/'.$path['filename'].'-'.$width.'x'.$height.'-'.\preg_replace('/\D+/', 'x' ,\trim($ratio)).'.'.$path['extension'];
+				$newfile = $path['dirname'].'/'.$path['filename'].'-'.$width.'x'.$height.'-'.preg_replace('/\D+/', 'x' ,trim($ratio)).'.'.$path['extension'];
 			}
 			else {
 				$newfile = $path['dirname'].'/'.$path['filename'].'-'.$width.'x'.$height.'.'.$path['extension'];
 			}
 
-			if (\file_exists($prefix.$newfile)) {
+			if (file_exists($prefix.$newfile)) {
 				return $newfile;
 			}
 
-			if (\file_exists($prefix.$source)) {
+			if (file_exists($prefix.$source)) {
 				$format = self::nonformat($prefix.$source, $width, $height, $ratio);
 
-				if (0 == $format[0] && 1 == \count($format)) {
-					\copy($prefix.$source, $prefix.$newfile);
+				if (0 == $format[0] && 1 == count($format)) {
+					copy($prefix.$source, $prefix.$newfile);
 					return $newfile;
 				}
 
-				if (1 == $format[0] && 1 == \count($format)) {
+				if (1 == $format[0] && 1 == count($format)) {
 					return null;
 				}
 
@@ -333,12 +337,12 @@ abstract class Image {
 			else {
 				$format = self::nonformat($prefix.$file, $width, $height, $ratio);
 
-				if (0 == $format[0] && 1 == \count($format)) {
-					\copy($prefix.$file, $prefix.$newfile);
+				if (0 == $format[0] && 1 == count($format)) {
+					copy($prefix.$file, $prefix.$newfile);
 					return $newfile;
 				}
 
-				if (1 == $format[0] && 1 == \count($format)) {
+				if (1 == $format[0] && 1 == count($format)) {
 					return null;
 				}
 
@@ -351,11 +355,11 @@ abstract class Image {
 			$newfile = $file;
 			$format = self::nonformat($prefix.$file, $width, $height, $ratio);
 
-			if (0 == $format[0] && 1 == \count($format)) {
+			if (0 == $format[0] && 1 == count($format)) {
 				return $file;
 			}
 
-			if (1 == $format[0] && 1 == \count($format)) {
+			if (1 == $format[0] && 1 == count($format)) {
 				return null;
 			}
 
@@ -363,20 +367,20 @@ abstract class Image {
 				return null;
 			}
 
-			if ($src && !\file_exists($prefix.$source)) {
-				\copy($prefix.$file, $prefix.$source);
+			if ($src && !file_exists($prefix.$source)) {
+				copy($prefix.$file, $prefix.$source);
 			}
 		}
 
 		switch ($format[2]) {
 		case 2:
 		case 5:
-			$img->resampled($width, (int)\round($width * $format[1] / $format[0], 0), $prefix.$newfile);
+			$img->resampled($width, (int)round($width * $format[1] / $format[0], 0), $prefix.$newfile);
 			break;
 
 		case 3:
 		case 6:
-			$img->resampled((int)\round($height * $format[0] / $format[1], 0), $height, $prefix.$newfile);
+			$img->resampled((int)round($height * $format[0] / $format[1], 0), $height, $prefix.$newfile);
 			break;
 
 		case 4:
@@ -385,10 +389,10 @@ abstract class Image {
 			$h = $height / $format[1];
 
 			if ($w < $h) {
-				$img->resampled($width, (int)\round($width * $format[1] / $format[0], 0), $prefix.$newfile);
+				$img->resampled($width, (int)round($width * $format[1] / $format[0], 0), $prefix.$newfile);
 			}
 			elseif ($w > $h) {
-				$img->resampled((int)\round($height * $format[0] / $format[1], 0), $height, $prefix.$newfile);
+				$img->resampled((int)round($height * $format[0] / $format[1], 0), $height, $prefix.$newfile);
 			}
 			else {
 				$img->resampled($width, $height, $prefix.$newfile);
@@ -397,23 +401,23 @@ abstract class Image {
 			break;
 
 		case 8:
-			$img->adapt($format[0], (int)\round($format[0] * $format[4] / $format[3], 0), $prefix.$newfile);
+			$img->adapt($format[0], (int)round($format[0] * $format[4] / $format[3], 0), $prefix.$newfile);
 			break;
 
 		case 9:
-			$img->adapt((int)\round($format[1] * $format[3] / $format[4], 0), $format[1], $prefix.$newfile);
+			$img->adapt((int)round($format[1] * $format[3] / $format[4], 0), $format[1], $prefix.$newfile);
 			break;
 
 		case 10:
 		case 13:
 		case 15:
-			$img->adapt($width, (int)\round($width * $format[4] / $format[3], 0), $prefix.$newfile);
+			$img->adapt($width, (int)round($width * $format[4] / $format[3], 0), $prefix.$newfile);
 			break;
 
 		case 11:
 		case 12:
 		case 14:
-			$img->adapt((int)\round($height * $format[3] / $format[4], 0), $height, $prefix.$newfile);
+			$img->adapt((int)round($height * $format[3] / $format[4], 0), $height, $prefix.$newfile);
 			break;
 		}
 
@@ -431,19 +435,19 @@ abstract class Image {
 		if ('' == $suffix) {
 			$suffix = 'i'.$width.'.';
 		}
-		elseif (!\str_ends_with($suffix, '.')) {
+		elseif (!str_ends_with($suffix, '.')) {
 			$suffix.= '.';
 		}
 
-		$path = \pathinfo($source);
+		$path = pathinfo($source);
 		$view = $path['dirname'].'/'.$path['filename'].$suffix.$path['extension'];
 
-		if (\file_exists($prefix.$view)) {
+		if (file_exists($prefix.$view)) {
 			if (!$check) {
 				return $view;
 			}
 
-			$size = \getimagesize($prefix.$view);
+			$size = getimagesize($prefix.$view);
 
 			if ('' == $ratio) {
 				if ($size[0] == $width) {
@@ -451,15 +455,15 @@ abstract class Image {
 				}
 			}
 			else {
-				list($w, $h) = \preg_split('/\D+/', $ratio);
+				list($w, $h) = preg_split('/\D+/', $ratio);
 
-				if ($size[0] == $width && \round($size[0] / $w * $h, 0) == $size[1]) {
+				if ($size[0] == $width && round($size[0] / $w * $h, 0) == $size[1]) {
 					return $view;
 				}
 			}
 		}
 
-		if (!\file_exists($prefix.$source)) {
+		if (!file_exists($prefix.$source)) {
 			return null;
 		}
 
@@ -471,8 +475,8 @@ abstract class Image {
 			$img->fit($width, 0, $prefix.$view);
 		}
 		else {
-			list($w, $h) = \preg_split('/\D+/', $ratio);
-			$img->fit($width, (int)\round($width / $w * $h, 0), $prefix.$view);
+			list($w, $h) = preg_split('/\D+/', $ratio);
+			$img->fit($width, (int)round($width / $w * $h, 0), $prefix.$view);
 		}
 
 		return $view;
@@ -489,21 +493,21 @@ abstract class Image {
 	}
 
 	public static function rounded(&$img, int $radius = 8, int $rate = 80): void {
-		$width = \imagesx($img);
-		$height = \imagesy($img);
+		$width = imagesx($img);
+		$height = imagesy($img);
 
 		// для получения прозрачности
-		\imagealphablending($img, false);
-		\imagesavealpha($img, true);
+		imagealphablending($img, false);
+		imagesavealpha($img, true);
 
 		$rs_radius = $radius * $rate;
 		$rs_size = $rs_radius * 2;
 
-		$corner = \imagecreatetruecolor($rs_size, $rs_size);
-		\imagealphablending($corner, false);
+		$corner = imagecreatetruecolor($rs_size, $rs_size);
+		imagealphablending($corner, false);
 
-		$trans = \imagecolorallocatealpha($corner, 255, 255, 255, 127);
-		\imagefill($corner, 0, 0, $trans);
+		$trans = imagecolorallocatealpha($corner, 255, 255, 255, 127);
+		imagefill($corner, 0, 0, $trans);
 
 		$positions = [
 			[0, 0, 0, 0],
@@ -513,7 +517,7 @@ abstract class Image {
 		];
 
 		foreach ($positions as $pos) {
-			\imagecopyresampled(
+			imagecopyresampled(
 				$corner,
 				$img,
 				$pos[0],
@@ -534,20 +538,20 @@ abstract class Image {
 
 		for (; $i <= $y2; $i++) {
 			$y = $i;
-			$x = (int)\round(\sqrt($r_2 - $y * $y), 0);
+			$x = (int)round(sqrt($r_2 - $y * $y), 0);
 
 			$y += $rs_radius;
 			$x += $rs_radius;
 
-			\imageline($corner, $x, $y, $rs_size, $y, $trans);
-			\imageline($corner, 0, $y, $rs_size - $x, $y, $trans);
+			imageline($corner, $x, $y, $rs_size, $y, $trans);
+			imageline($corner, 0, $y, $rs_size - $x, $y, $trans);
 
 			$lx = $x;
 			$ly = $y;
 		}
 
 		foreach ($positions as $i => $pos) {
-			\imagecopyresampled(
+			imagecopyresampled(
 				$img,
 				$corner,
 				$pos[2],
@@ -563,21 +567,21 @@ abstract class Image {
 	}
 
 	public static function make(string $file): ?self {
-		if (!\extension_loaded('gd')) {
+		if (!extension_loaded('gd')) {
 			Error::log('gd', Status::Mode);
 			return null;
 		}
 
-		$info = \getimagesize($file);
+		$info = getimagesize($file);
 
 		switch ($info[2]) {
-		case \IMAGETYPE_JPEG:
+		case IMAGETYPE_JPEG:
 			return new Jpeg($file, $info);
-		case \IMAGETYPE_GIF:
+		case IMAGETYPE_GIF:
 			return new Gif($file, $info);
-		case \IMAGETYPE_PNG:
+		case IMAGETYPE_PNG:
 			return new Png($file, $info);
-		case \IMAGETYPE_WBMP:
+		case IMAGETYPE_WBMP:
 			return new Wbmp($file, $info);
 		default:
 			Error::log($info[2], Status::Domain);
@@ -603,7 +607,7 @@ abstract class Image {
 	 * с изменением размера (уменьшение, увеличение) изображения на заданную ширину.
 	 */
 	public function resize(int $width, string|null $file = null): void {
-		$height = (int)\round($this->info[1] / ($this->info[0] / $width), 0);
+		$height = (int)round($this->info[1] / ($this->info[0] / $width), 0);
 		$this->resampled($width, $height, $file);
 	}
 
@@ -622,10 +626,10 @@ abstract class Image {
 		$h = $this->info[1] / $height;
 
 		if ($w > $h) {
-			$height = (int)\round($this->info[1] / $w, 0);
+			$height = (int)round($this->info[1] / $w, 0);
 		}
 		elseif ($w < $h) {
-			$width = (int)\round($this->info[0] / $h, 0);
+			$width = (int)round($this->info[0] / $h, 0);
 		}
 
 		$this->resampled($width, $height, $file);
@@ -643,29 +647,29 @@ abstract class Image {
 
 		$iwh = $iw / $ih;
 
-		if (!$image = \imagecreatetruecolor($w, $h)) {
+		if (!$image = imagecreatetruecolor($w, $h)) {
 			return false;
 		}
 
-		\imagefill($image, 0, 0, \imagecolorallocatealpha($image, 255, 255, 255, 127));
+		imagefill($image, 0, 0, imagecolorallocatealpha($image, 255, 255, 255, 127));
 
 		if ($w > $iw && $h > $ih) {
 			$nw = $iw;
 			$nh = $ih;
-			$x  = (int) \round(($w - $iw) / 2.01, 0);
-			$y  = (int) \round(($h - $ih) / 2.01, 0);
+			$x  = (int) round(($w - $iw) / 2.01, 0);
+			$y  = (int) round(($h - $ih) / 2.01, 0);
 		}
 		elseif ($wh > $iwh) {
-			$nw = (int) \round($h * $iwh, 0);
+			$nw = (int) round($h * $iwh, 0);
 			$nh = $h;
-			$x  = (int) \round(($w - $nw) / 2.01, 0);
+			$x  = (int) round(($w - $nw) / 2.01, 0);
 			$y  = 0;
 		}
 		elseif ($wh < $iwh) {
 			$nw = $w;
-			$nh = (int) \round($w / $iwh, 0);
+			$nh = (int) round($w / $iwh, 0);
 			$x  = 0;
-			$y  = (int) \round(($h - $nh) / 2.01, 0);
+			$y  = (int) round(($h - $nh) / 2.01, 0);
 		}
 		else {
 			$nw = $w;
@@ -674,7 +678,7 @@ abstract class Image {
 			$y  = 0;
 		}
 
-		if (!\imagecopyresampled($image, $this->image, $x, $y, 0, 0, $nw, $nh, $iw, $ih)) {
+		if (!imagecopyresampled($image, $this->image, $x, $y, 0, 0, $nw, $nh, $iw, $ih)) {
 			return false;
 		}
 
@@ -700,29 +704,29 @@ abstract class Image {
 
 		$iwh = $iw / $ih;
 
-		if (!$image = \imagecreatetruecolor($w, $h)) {
+		if (!$image = imagecreatetruecolor($w, $h)) {
 			return false;
 		}
 
-		\imagefill($image, 0, 0, \imagecolorallocatealpha($image, 255, 255, 255, 127));
+		imagefill($image, 0, 0, imagecolorallocatealpha($image, 255, 255, 255, 127));
 
 		if ($w > $iw && $h > $ih) {
-			$x  = (int)\round(($w - $iw) / 2.01, 0);
-			$y  = (int)\round(($h - $ih) / 2.01, 0);
+			$x  = (int)round(($w - $iw) / 2.01, 0);
+			$y  = (int)round(($h - $ih) / 2.01, 0);
 			$ix = 0;
 			$iy = 0;
 			$nw = $sw = $iw;
 			$nh = $sh = $ih;
 		}
 		elseif ($w > $iw) {
-			$x  = (int)\round(($w - $iw) / 2, 0);
+			$x  = (int)round(($w - $iw) / 2, 0);
 			$y  = 0;
 			$ix = 0;
 
 			$iy = match ($ch) {
 				Cut::Top   => 0,
 				Cut::Bottm => $ih - $h,
-				default    => (int) \round(($ih - $h) / 2, 0),
+				default    => (int) round(($ih - $h) / 2, 0),
 			};
 
 			$nw = $sw = $iw;
@@ -730,12 +734,12 @@ abstract class Image {
 		}
 		elseif ($h > $ih) {
 			$x  = 0;
-			$y  = (int)\round(($h - $ih) / 2, 0);
+			$y  = (int)round(($h - $ih) / 2, 0);
 
 			$ix = match ($ch) {
 				Cut::Left  => 0,
 				Cut::Right => $iw - $w,
-				default    => (int) \round(($iw - $w) / 2, 0),
+				default    => (int) round(($iw - $w) / 2, 0),
 			};
 
 			$iy = 0;
@@ -749,14 +753,14 @@ abstract class Image {
 
 			$iy = match ($ch) {
 				Cut::Top   => 0,
-				Cut::Bottm => (int) \round($ih - $iw * $h / $w, 0),
-				default    => (int) \round(($ih - $iw * $h / $w) / 2, 0),
+				Cut::Bottm => (int) round($ih - $iw * $h / $w, 0),
+				default    => (int) round(($ih - $iw * $h / $w) / 2, 0),
 			};
 
 			$nw = $w;
 			$nh = $h;
 			$sw = $iw;
-			$sh = (int)\round($iw * $h / $w, 0);
+			$sh = (int)round($iw * $h / $w, 0);
 		}
 		elseif ($wh < $iwh) {
 			$x  = 0;
@@ -764,14 +768,14 @@ abstract class Image {
 
 			$ix = match ($ch) {
 				Cut::Left  => 0,
-				Cut::Right => (int) \round($iw - $ih * $w / $h, 0),
-				default    => (int) \round(($iw - $ih * $w / $h) / 2, 0),
+				Cut::Right => (int) round($iw - $ih * $w / $h, 0),
+				default    => (int) round(($iw - $ih * $w / $h) / 2, 0),
 			};
 
 			$iy = 0;
 			$nw = $w;
 			$nh = $h;
-			$sw = (int)\round($ih * $w / $h, 0);
+			$sw = (int)round($ih * $w / $h, 0);
 			$sh = $ih;
 		}
 		else {
@@ -785,7 +789,7 @@ abstract class Image {
 			$sh = $ih;
 		}
 
-		if (!\imagecopyresampled($image, $this->image, $x, $y, $ix, $iy, $nw, $nh, $sw, $sh)) {
+		if (!imagecopyresampled($image, $this->image, $x, $y, $ix, $iy, $nw, $nh, $sw, $sh)) {
 			return false;
 		}
 
@@ -794,17 +798,17 @@ abstract class Image {
 	}
 
 	public function resampled(int $width, int $height, string|null $file = null): void {
-		$resize = \imagecreatetruecolor($width, $height);
-		\imagefill($resize, 0, 0, \imagecolorallocatealpha($resize, 255, 255, 255, 127));
+		$resize = imagecreatetruecolor($width, $height);
+		imagefill($resize, 0, 0, imagecolorallocatealpha($resize, 255, 255, 255, 127));
 
 		if ($this->sharp) {
-			\imagecopyresized(
+			imagecopyresized(
 				$resize, $this->image, 0, 0, 0, 0,
 				$width, $height, $this->info[0], $this->info[1]
 			);
 		}
 		else {
-			\imagecopyresampled(
+			imagecopyresampled(
 				$resize, $this->image, 0, 0, 0, 0,
 				$width, $height, $this->info[0], $this->info[1]
 			);
@@ -815,18 +819,18 @@ abstract class Image {
 
 	public function resizeRotate(int $width, int $prop = 1, ?string $file = null): void {
 		if ($this->info[1] > ($this->info[0] * $prop)) {
-			$rotate = \imagerotate($this->image, 90, 0);
-			$height = (int)\round($this->info[0] / ($this->info[1] / $width), 0);
+			$rotate = imagerotate($this->image, 90, 0);
+			$height = (int)round($this->info[0] / ($this->info[1] / $width), 0);
 		}
 		else {
 			$rotate = $this->image;
-			$height = (int)\round($this->info[1] / ($this->info[0] / $width), 0);
+			$height = (int)round($this->info[1] / ($this->info[0] / $width), 0);
 		}
 
-		$resize = \imagecreatetruecolor($width, $height);
-		\imagefill($resize, 0, 0, \imagecolorallocatealpha($resize, 255, 255, 255, 127));
+		$resize = imagecreatetruecolor($width, $height);
+		imagefill($resize, 0, 0, imagecolorallocatealpha($resize, 255, 255, 255, 127));
 
-		\imagecopyresized(
+		imagecopyresized(
 			$resize, $rotate, 0, 0, 0, 0,
 			$width, $height, $this->info[0], $this->info[1]
 		);
@@ -835,16 +839,16 @@ abstract class Image {
 	}
 
 	protected function send($image, string|null $file = null): void {
-		if (\is_null($file)) {
-			\header('Content-type: '.$this->info['mime']);
+		if (is_null($file)) {
+			header('Content-type: '.$this->info['mime']);
 		}
 
-		\ultra\IO::indir($file);
+		IO::indir($file);
 		$this->save($image, $file);
 	}
 
 	public function rotate(int $deg, int $bg = 0, string|null $file = null): void {
-		$rotate = \imagerotate($this->image, $deg, $bg);
+		$rotate = imagerotate($this->image, $deg, $bg);
 		$this->send($rotate, $file);
 	}
 

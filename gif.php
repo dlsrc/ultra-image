@@ -12,16 +12,16 @@ final class Gif extends Image {
 	}
 
 	protected function create(string $file) {
-		return \imagecreatefromgif($file);
+		return imagecreatefromgif($file);
 	}
 
 	protected function save($image, string|null $file = NULL): void {
-		//\imagegif($image, $file);
-		if (\is_null($file)) {
-			\imagegif($image);
+		//imagegif($image, $file);
+		if (is_null($file)) {
+			imagegif($image);
 		}
 		else {
-			\imagegif($image, $file);
+			imagegif($image, $file);
 		}
 	}
 }

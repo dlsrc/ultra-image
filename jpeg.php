@@ -12,15 +12,15 @@ final class Jpeg extends Image {
 	}
 
 	protected function create(string $file) {
-		return \imagecreatefromjpeg($file);
+		return imagecreatefromjpeg($file);
 	}
 
 	protected function save($image, string|null $file = null): void {
-		if (\is_null($file)) {
-			\imagejpeg($image);
+		if (is_null($file)) {
+			imagejpeg($image);
 		}
 		else {
-			\imagejpeg($image, $file);
+			imagejpeg($image, $file);
 		}
 	}
 }
