@@ -1,6 +1,6 @@
 {
     "name": "ultra/image",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "type": "library",
     "description": "A tool for simple operations with images. Cropping, resizing, creating thumbnails, etc.",
     "license": "MIT",
