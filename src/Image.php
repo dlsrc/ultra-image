@@ -1,23 +1,15 @@
 <?php declare(strict_types=1);
 /**
- * (c) 2005-2023 Dmitry Lebedev <dl@adios.ru>
+ * (c) 2005-2024 Dmitry Lebedev <dl@adios.ru>
  * This source code is part of the Ultra image package.
  * Please see the LICENSE file for copyright and licensing information.
  */
-namespace ultra\image;
+namespace Ultra\Image;
 
-use ultra\Code;
-use ultra\Error;
-use ultra\IO;
-use ultra\Status;
-
-enum Cut {
-	case Bottom;
-	case Center;
-	case Left;
-	case Right;
-	case Top;
-}
+use Ultra\Code;
+use Ultra\Error;
+use Ultra\IO;
+use Ultra\Status;
 
 abstract class Image {
 	abstract public function extension(): string;
