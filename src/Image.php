@@ -576,7 +576,7 @@ abstract class Image {
 		case IMAGETYPE_WBMP:
 			return new Wbmp($file, $info);
 		default:
-			Error::log($info[2], Status::Domain);
+			Error::log('Unsupported image type.', Status::Domain);
 			return null;
 		}
 	}
@@ -717,7 +717,7 @@ abstract class Image {
 
 			$iy = match ($ch) {
 				Cut::Top   => 0,
-				Cut::Bottm => $ih - $h,
+				Cut::Bottom => $ih - $h,
 				default    => (int) round(($ih - $h) / 2, 0),
 			};
 
@@ -745,7 +745,7 @@ abstract class Image {
 
 			$iy = match ($ch) {
 				Cut::Top   => 0,
-				Cut::Bottm => (int) round($ih - $iw * $h / $w, 0),
+				Cut::Bottom => (int) round($ih - $iw * $h / $w, 0),
 				default    => (int) round(($ih - $iw * $h / $w) / 2, 0),
 			};
 
