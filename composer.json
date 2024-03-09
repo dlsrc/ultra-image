@@ -24,6 +24,6 @@
     },
     "require": {
         "php": ">=8.3",
-        "ultra/core": "^1.0.2"
+        "ultra/core": "^1.0.0"
     }
 }
