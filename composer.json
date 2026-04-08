@@ -1,6 +1,6 @@
 {
     "name": "ultra/image",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "type": "library",
     "description": "A tool for simple operations with images. Cropping, resizing, creating thumbnails, etc.",
     "license": "MIT",
@@ -24,6 +24,6 @@
     },
     "require": {
         "php": ">=8.3",
-        "ultra/core": "^1.0.0"
+        "ultra/core": "^2.1.0"
     }
 }
