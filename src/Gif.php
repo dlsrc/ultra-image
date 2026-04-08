@@ -6,17 +6,18 @@
  */
 namespace Ultra\Image;
 
+use GdImage;
+
 final class Gif extends Image {
 	public function extension(): string {
 		return '.gif';
 	}
 
-	protected function create(string $file) {
+	protected function create(string $file): GdImage|false {
 		return imagecreatefromgif($file);
 	}
 
-	protected function save($image, string|null $file = NULL): void {
-		//imagegif($image, $file);
+	protected function save(GdImage $image, string|null $file = NULL): void {
 		if (is_null($file)) {
 			imagegif($image);
 		}

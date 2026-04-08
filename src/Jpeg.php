@@ -6,16 +6,18 @@
  */
 namespace Ultra\Image;
 
+use GdImage;
+
 final class Jpeg extends Image {
 	public function extension(): string {
 		return '.jpg';
 	}
 
-	protected function create(string $file) {
+	protected function create(string $file): GdImage|false {
 		return imagecreatefromjpeg($file);
 	}
 
-	protected function save($image, string|null $file = null): void {
+	protected function save(GdImage $image, string|null $file = null): void {
 		if (is_null($file)) {
 			imagejpeg($image);
 		}

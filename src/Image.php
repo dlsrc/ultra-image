@@ -6,6 +6,7 @@
  */
 namespace Ultra\Image;
 
+use GdImage;
 use Ultra\Code;
 use Ultra\Error;
 use Ultra\IO;
@@ -13,8 +14,8 @@ use Ultra\Status;
 
 abstract class Image {
 	abstract public function extension(): string;
-	abstract protected function create(string $file);
-	abstract protected function save($image, string|null $file = null): void;
+	abstract protected function create(string $file): GdImage|false;
+	abstract protected function save(GdImage $image, string|null $file = null): void;
 
 	/**
 	 * Информация о файле изображения
@@ -24,7 +25,7 @@ abstract class Image {
 	/**
 	 * Идентификатор изображения
 	 */
-	private $image;
+	private GdImage|false $image;
 
 	/**
 	 * Использовать imagecopyresized вместо imagecopyresampled

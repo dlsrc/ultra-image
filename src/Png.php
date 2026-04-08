@@ -6,16 +6,18 @@
  */
 namespace Ultra\Image;
 
+use GdImage;
+
 final class Png extends Image {
 	public function extension(): string {
 		return '.png';
 	}
 
-	protected function create(string $file) {
+	protected function create(string $file): GdImage|false {
 		return imagecreatefrompng($file);
 	}
 
-	protected function save($image, string|null $file = NULL): void {
+	protected function save(GdImage $image, string|null $file = NULL): void {
 		imagealphablending($image, false);
 		imagesavealpha($image, true);
 
