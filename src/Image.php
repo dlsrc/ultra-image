@@ -485,7 +485,7 @@ abstract class Image {
 		$this->sharp = $sharp;
 	}
 
-	public static function rounded(&$img, int $radius = 8, int $rate = 80): void {
+	public static function rounded(GdImage $img, int $radius = 8, int $rate = 80): void {
 		$width = imagesx($img);
 		$height = imagesy($img);
 
@@ -831,7 +831,7 @@ abstract class Image {
 		$this->send($resize, $file);
 	}
 
-	protected function send($image, string|null $file = null): void {
+	protected function send(GdImage $image, string|null $file = null): void {
 		if (is_null($file)) {
 			header('Content-type: '.$this->info['mime']);
 		}
